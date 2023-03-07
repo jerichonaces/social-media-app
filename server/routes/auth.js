@@ -3,7 +3,7 @@ import express from 'express';
 const router = express.Router();
 
 // middlewares
-import { requireSignin } from '../middlewares';
+import { isAdmin, requireSignin } from '../middlewares';
 
 // controllers
 import {
@@ -18,8 +18,8 @@ import {
   userFollowing,
   removeFollower,
   userUnfollow,
-  likePost,
-  unlikePost,
+  searchUser,
+  getUser,
 } from '../controllers/auth';
 
 router.post('/register', register);
@@ -31,7 +31,10 @@ router.get('/find-people', requireSignin, findPeople);
 router.put('/user-follow', requireSignin, addFollower, userFollow);
 router.get('/user-following', requireSignin, userFollowing);
 router.put('/user-unfollow', requireSignin, removeFollower, userUnfollow);
-router.put('/like-post', requireSignin, likePost);
-router.put('/unlike-post', requireSignin, unlikePost);
+router.get('/search-user/:query', searchUser);
+router.get('/user/:username', getUser);
+
+// admin
+router.get('/current-admin', requireSignin, isAdmin, currentUser);
 
 module.exports = router;

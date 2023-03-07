@@ -12,6 +12,7 @@ const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [secret, setSecret] = useState('');
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,6 +28,7 @@ const Register = () => {
         name,
         email,
         password,
+        confirmPassword,
         secret,
       });
 
@@ -37,6 +39,7 @@ const Register = () => {
         setName('');
         setEmail('');
         setPassword('');
+        setConfirmPassword('');
         setSecret('');
         setOk(data.ok);
         setLoading(false);
@@ -51,9 +54,9 @@ const Register = () => {
 
   return (
     <div className='container-fluid'>
-      <div className='row py-5 text-dark bg-default-image'>
-        <div className='col text-center'>
-          <h1>Register</h1>
+      <div className='row py-10 text-light bg-default-image'>
+        <div className='col'>
+          <h1 className='display-1 fw-bold text-center'>Register</h1>
         </div>
       </div>
 
@@ -68,6 +71,8 @@ const Register = () => {
             setName={setName}
             setEmail={setEmail}
             setPassword={setPassword}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
             setSecret={setSecret}
             loading={loading}
           />
@@ -82,8 +87,8 @@ const Register = () => {
               footer={null}
             >
               <p>You have successfully registered.</p>
-              <Link href='/login' legacyBehavior>
-                <a className='btn btn-primary btn-sm'>Login</a>
+              <Link href='/login' className='btn btn-primary btn-sm'>
+                Login
               </Link>
             </Modal>
           </div>
@@ -93,10 +98,7 @@ const Register = () => {
       <div className='row'>
         <div className='col'>
           <p className='text-center'>
-            Already registered?{' '}
-            <Link href='/login' legacyBehavior>
-              <a>Login</a>
-            </Link>
+            Already registered? <Link href='/login'>Login</Link>
           </p>
         </div>
       </div>

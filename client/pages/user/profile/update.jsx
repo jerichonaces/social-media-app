@@ -50,7 +50,7 @@ const ProfileUpdate = () => {
         secret,
         image,
       });
-      console.log('update response => ', data);
+      // console.log('update response => ', data);
       if (data.error) {
         toast.error(data.error);
         setLoading(false);
@@ -92,9 +92,9 @@ const ProfileUpdate = () => {
 
   return (
     <div className='container-fluid'>
-      <div className='row py-5 text-dark bg-default-image'>
-        <div className='col text-center'>
-          <h1>Profile</h1>
+      <div className='row py-10 text-light bg-default-image'>
+        <div className='col'>
+          <h1 className='display-1 fw-bold text-center'>Profile</h1>
         </div>
       </div>
       <div className='row py-5'>
@@ -102,7 +102,7 @@ const ProfileUpdate = () => {
           {/* upload image */}
           <label className='d-flex justify-content-center h5'>
             {image && image.url ? (
-              <Avatar size={30} src={image.url} className='mt-2' />
+              <Avatar size={100} src={image.url} className='mt-2' />
             ) : uploading ? (
               <LoadingOutlined className='mt-2' />
             ) : (
@@ -146,16 +146,6 @@ const ProfileUpdate = () => {
               <p>You have successfully updated your profile.</p>
             </Modal>
           </div>
-        </div>
-      </div>
-      <div className='row'>
-        <div className='col'>
-          <p className='text-center'>
-            Already registered?{' '}
-            <Link href='/login' legacyBehavior>
-              <a>Login</a>
-            </Link>
-          </p>
         </div>
       </div>
     </div>

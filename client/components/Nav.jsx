@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { UserContext } from '../context';
 import { useRouter } from 'next/router';
 import { Avatar } from 'antd';
+import { HomeFilled, HomeOutlined } from '@ant-design/icons';
+import { imageSource } from '../functions';
 
 const Nav = () => {
   const [current, setCurrent] = useState('');
@@ -21,79 +23,92 @@ const Nav = () => {
   };
 
   return (
-    <nav
-      className='nav d-flex justify-content-between'
-      style={{ backgroundColor: 'blue' }}
-    >
-      <Link href='/' legacyBehavior>
-        <a
-          className={`nav-link text-light logo ${current === '/' && 'active'}`}
-        >
-          <Avatar src='/images/logo.png' /> PJ & CONNECT
-        </a>
+    <nav className='nav d-flex justify-content-between align-items-center'>
+      <Link href='/' className='nav-link'>
+        <Avatar src='/images/logo.jpg' />
       </Link>
 
       {state === null ? (
         <>
-          <Link href='/login' legacyBehavior>
-            <a
-              className={`nav-link text-light ${
-                current === '/login' && 'active'
-              }`}
-            >
-              Login
-            </a>
+          <Link
+            href='/login'
+            className={`nav-link ${
+              current === '/login' ? 'text-primary' : 'text-dark'
+            }`}
+          >
+            Login
           </Link>
 
-          <Link href='/register' legacyBehavior>
-            <a
-              className={`nav-link text-light ${
-                current === '/register' && 'active'
-              }`}
-            >
-              Register
-            </a>
+          <Link
+            href='/register'
+            className={`nav-link ${
+              current === '/register' ? 'text-primary' : 'text-dark'
+            }`}
+          >
+            Register
           </Link>
         </>
       ) : (
         <>
+          <div>
+            <Link
+              href='/user/dashboard'
+              className={`nav-link dropdown-item ${
+                current === '/user/dashboard' ? 'text-primary' : 'text-dark'
+              }`}
+            >
+              {current === '/user/dashboard' ? (
+                <HomeFilled className='h5' />
+              ) : (
+                <HomeOutlined className='h5' />
+              )}
+            </Link>
+          </div>
+
           <div className='dropdown'>
             <a
-              className='btn dropdown-toggle text-light'
-              style={{ borderColor: 'blue' }}
+              className='btn dropdown-toggle'
               role='button'
               data-bs-toggle='dropdown'
               aria-expanded='false'
             >
-              {state && state.user && state.user.name}
+              {state && state.user && (
+                <Avatar size={30} src={imageSource(state.user)} />
+              )}
             </a>
             <ul className='dropdown-menu'>
-              <li>
-                <Link href='/user/dashboard' legacyBehavior>
-                  <a
+              {state.user.role === 'Admin' && (
+                <li>
+                  <Link
+                    href='/admin'
                     className={`nav-link dropdown-item ${
-                      current === '/user/dashboard' && 'active'
+                      current === '/admin' ? 'text-primary' : 'text-dark'
                     }`}
                   >
-                    Newsfeed
-                  </a>
+                    Admin
+                  </Link>
+                </li>
+              )}
+
+              <li>
+                <Link
+                  href='/user/profile/update'
+                  className={`nav-link dropdown-item ${
+                    current === '/user/profile/update'
+                      ? 'text-primary'
+                      : 'text-dark'
+                  }`}
+                >
+                  Profile
                 </Link>
               </li>
 
               <li>
-                <Link href='/user/profile/update' legacyBehavior>
-                  <a
-                    className={`nav-link dropdown-item ${
-                      current === '/user/profile/update' && 'active'
-                    }`}
-                  >
-                    Profile
-                  </a>
-                </Link>
-              </li>
-
-              <li>
-                <a href='#' onClick={logout} className='nav-link dropdown-item'>
+                <a
+                  href='#'
+                  onClick={logout}
+                  className='nav-link dropdown-item text-danger'
+                >
                   Logout
                 </a>
               </li>

@@ -6,7 +6,7 @@ import Post from '../models/post';
 
 export const register = async (req, res) => {
   //   console.log('REGISTER ENDPOINT =>', req.body);
-  const { name, email, password, secret } = req.body;
+  const { name, email, password, confirmPassword, secret } = req.body;
 
   // validation
   if (!name) {
@@ -18,6 +18,12 @@ export const register = async (req, res) => {
   if (!password || password.length < 6) {
     return res.json({
       error: 'Password is required and should be min 6 characters long.',
+    });
+  }
+
+  if (!(password === confirmPassword)) {
+    return res.json({
+      error: 'Password does not match.',
     });
   }
 
@@ -165,7 +171,7 @@ export const profileUpdate = async (req, res) => {
     if (req.body.image) data.image = req.body.image;
 
     let user = await User.findByIdAndUpdate(req.auth._id, data, { new: true });
-    console.log('updated user', user);
+    // console.log('updated user', user);
     user.password = undefined;
     user.secret = undefined;
     res.json(user);
@@ -225,10 +231,6 @@ export const userFollowing = async (req, res) => {
     const user = await User.findById(req.auth._id);
     const following = await User.find({ _id: user.following }).limit(100);
     res.json(following);
-    console.log(
-      '🚀 ~ file: auth.js:227 ~ userFollowing ~ following:',
-      following
-    );
   } catch (error) {
     console.log(error);
   }
@@ -260,31 +262,31 @@ export const userUnfollow = async (req, res) => {
   }
 };
 
-export const likePost = async (req, res) => {
+export const searchUser = async (req, res) => {
+  const { query } = req.params;
+  if (!query) return;
+
   try {
-    const post = await Post.findByIdAndUpdate(
-      req.body._id,
-      {
-        $addToSet: { likes: req.auth._id },
-      },
-      { new: true }
-    );
-    res.json(post);
+    // $regex is special method from mongodb
+    // The i modifier is used to perform case-sensitive matching
+    const user = await User.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { username: { $regex: query, $options: 'i' } },
+      ],
+    }).select('-password -secret');
+    res.json(user);
   } catch (error) {
     console.log(error);
   }
 };
 
-export const unlikePost = async (req, res) => {
+export const getUser = async (req, res) => {
   try {
-    const post = await Post.findByIdAndUpdate(
-      req.body._id,
-      {
-        $pull: { likes: req.auth._id },
-      },
-      { new: true }
+    const user = await User.findOne({ username: req.params.username }).select(
+      '-password -secret'
     );
-    res.json(post);
+    res.json(user);
   } catch (error) {
     console.log(error);
   }

@@ -4,6 +4,8 @@ import axios from 'axios';
 import PostForm from '../../../components/forms/PostForm';
 import UserRoute from '../../../components/routes/UserRoute';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
+import { RollbackOutlined } from '@ant-design/icons';
 
 const EditPost = () => {
   const [post, setPost] = useState({});
@@ -71,13 +73,20 @@ const EditPost = () => {
   return (
     <UserRoute>
       <div className='container-fluid'>
-        <div className='row py-5 text-dark bg-default-image'>
-          <div className='col text-center'>
-            <h1>Newsfeed</h1>
+        <div className='row py-10 text-light bg-default-image'>
+          <div className='col'>
+            <h1 className='display-1 fw-bold text-center'>Edit Post</h1>
           </div>
         </div>
 
-        <div className='row py-3'>
+        <Link
+          href='javascript:history.back()'
+          className='d-flex justify-content-center mt-5'
+        >
+          <RollbackOutlined />
+        </Link>
+
+        <div className='row py-5'>
           <div className='col-md-8 offset-md-2'>
             <PostForm
               content={content}

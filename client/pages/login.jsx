@@ -35,7 +35,7 @@ const Login = () => {
         });
         // save in local storage
         window.localStorage.setItem('auth', JSON.stringify(data));
-        router.push('/');
+        router.push('/user/dashboard');
       }
     } catch (err) {
       toast.error(err.response.data);
@@ -47,9 +47,9 @@ const Login = () => {
 
   return (
     <div className='container-fluid'>
-      <div className='row py-5 text-dark bg-default-image'>
-        <div className='col text-center'>
-          <h1>Login</h1>
+      <div className='row py-10 text-light bg-default-image'>
+        <div className='col'>
+          <h1 className='display-1 fw-bold text-center'>Login</h1>
         </div>
       </div>
 
@@ -70,10 +70,7 @@ const Login = () => {
       <div className='row'>
         <div className='col'>
           <p className='text-center'>
-            Not yet registered?{' '}
-            <Link href='/register' legacyBehavior>
-              <a>Register</a>
-            </Link>
+            Not yet registered? <Link href='/register'>Register</Link>
           </p>
         </div>
       </div>
@@ -81,8 +78,8 @@ const Login = () => {
       <div className='row'>
         <div className='col'>
           <p className='text-center'>
-            <Link href='/forgot-password' legacyBehavior>
-              <a className='text-danger'>Forgot password</a>
+            <Link href='/forgot-password' className='text-danger'>
+              Forgot password
             </Link>
           </p>
         </div>

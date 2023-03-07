@@ -28,7 +28,7 @@ const ForgotPassword = () => {
         newPassword,
         secret,
       });
-      console.log('forgot password res data => ', data);
+      // console.log('forgot password res data => ', data);
       if (data.error) {
         toast.error(data.error);
         setLoading(false);
@@ -50,9 +50,9 @@ const ForgotPassword = () => {
 
   return (
     <div className='container-fluid'>
-      <div className='row py-5 text-dark bg-default-image'>
-        <div className='col text-center'>
-          <h1>Forgot Password</h1>
+      <div className='row py-10 text-light bg-default-image'>
+        <div className='col'>
+          <h1 className='display-1 fw-bold text-center'>Forgot Password</h1>
         </div>
       </div>
 
@@ -79,8 +79,8 @@ const ForgotPassword = () => {
               footer={null}
             >
               <p>You can now login with your new password.</p>
-              <Link href='/login' legacyBehavior>
-                <a className='btn btn-primary btn-sm'>Login</a>
+              <Link href='/login' className='btn btn-primary btn-sm'>
+                Login
               </Link>
             </Modal>
           </div>

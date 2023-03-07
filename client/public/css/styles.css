@@ -1,17 +1,21 @@
 .bg-default-image {
-    background-image: url('/images/default.jpg');
-    background-size: 100%;
-    height: 150px;
-    text-shadow: 2px 2px 8px #000;
+    background-image: url('/images/default.png');
+    background-attachment: fixed;
+    padding: 100px 0px 75px 0px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    /* text-shadow: 2px 2px black; */
 }
 
-.logo {
-    text-shadow: 2px 2px navy;
+.btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+    --bs-btn-active-border-color: transparent;
 }
 
-.active {
-    background-color: navy;
-}
+
+.dropdown-item:active {
+    background-color: transparent !important;
+  }
 
 .pointer {
     cursor: pointer;

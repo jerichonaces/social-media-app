@@ -4,7 +4,7 @@ import formidable from 'express-formidable';
 const router = express.Router();
 
 // middlewares
-import { requireSignin, canEditDeletePost } from '../middlewares';
+import { requireSignin, canEditDeletePost, isAdmin } from '../middlewares';
 
 // controllers
 import {
@@ -15,6 +15,13 @@ import {
   updatePost,
   deletePost,
   newsFeed,
+  likePost,
+  unlikePost,
+  addComment,
+  removeComment,
+  totalPosts,
+  posts,
+  getPost,
 } from '../controllers/post';
 
 router.post('/create-post', requireSignin, createPost);
@@ -33,6 +40,16 @@ router.delete(
   canEditDeletePost,
   deletePost
 );
-router.get('/news-feed', requireSignin, newsFeed);
+router.get('/news-feed/:page', requireSignin, newsFeed);
+router.put('/like-post', requireSignin, likePost);
+router.put('/unlike-post', requireSignin, unlikePost);
+router.put('/add-comment', requireSignin, addComment);
+router.put('/remove-comment', requireSignin, removeComment);
+router.get('/total-posts', totalPosts);
+router.get('/posts', posts);
+router.get('/post/:_id', getPost);
+
+// admin
+router.delete('/admin/delete-post/:_id', requireSignin, isAdmin, deletePost);
 
 module.exports = router;

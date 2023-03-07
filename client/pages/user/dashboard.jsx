@@ -8,6 +8,18 @@ import { toast } from 'react-toastify';
 import PostList from '../../components/cards/PostList';
 import People from '../../components/cards/People';
 import Link from 'next/link';
+import { Modal, Pagination } from 'antd';
+import CommentForm from '../../components/forms/CommentForm';
+import Search from '../../components/Search';
+import io from 'socket.io-client';
+
+const socket = io(
+  process.env.NEXT_PUBLIC_SOCKETIO,
+  { path: '/socket.io' },
+  {
+    reconnection: true,
+  }
+);
 
 const Home = () => {
   const [state, setState] = useContext(UserContext);
@@ -22,6 +34,15 @@ const Home = () => {
   // people
   const [people, setPeople] = useState([]);
 
+  // comments
+  const [comment, setComment] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [currentPost, setCurrentPost] = useState({});
+
+  // pagination
+  const [totalPosts, setTotalPosts] = useState(0);
+  const [page, setPage] = useState(1);
+
   // router
   const router = useRouter();
   const _id = router.query._id;
@@ -31,12 +52,19 @@ const Home = () => {
       newsFeed();
       findPeople();
     }
-  }, [state && state.token]);
+  }, [state && state.token, page]);
+
+  useEffect(() => {
+    try {
+      axios.get('/total-posts').then(({ data }) => setTotalPosts(data));
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const newsFeed = async () => {
     try {
-      const { data } = await axios.get('/news-feed');
-      // console.log('user posts => ', data);
+      const { data } = await axios.get(`/news-feed/${page}`);
       setPosts(data);
     } catch (err) {
       console.log(err);
@@ -57,14 +85,18 @@ const Home = () => {
     // console.log('post => ', content);
     try {
       const { data } = await axios.post('/create-post', { content, image });
-      console.log('create post response => ', data);
+      // console.log('create post response => ', data);
       if (data.error) {
         toast.error(data.error);
       } else {
+        setPage(1);
         newsFeed();
         toast.success('Post created.');
         setContent('');
         setImage({});
+
+        // socket
+        socket.emit('new-post', data);
       }
     } catch (err) {
       console.log(err);
@@ -98,6 +130,9 @@ const Home = () => {
       const { data } = await axios.delete(`/delete-post/${post._id}`);
       toast.error('Post deleted.');
       newsFeed();
+
+      // socket
+      socket.emit('delete-post', data);
     } catch (error) {
       console.log(error);
     }
@@ -149,12 +184,50 @@ const Home = () => {
     }
   };
 
+  const handleComment = async (post) => {
+    setCurrentPost(post);
+    setVisible(true);
+  };
+
+  const addComment = async (e) => {
+    e.preventDefault();
+    // console.log('add comment to this post id', currentPost._id);
+    // console.log('save comment to db', comment);
+    try {
+      const { data } = await axios.put('/add-comment', {
+        postId: currentPost._id,
+        comment,
+      });
+      // console.log('add comment', data);
+      setComment('');
+      setVisible(false);
+      newsFeed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeComment = async (postId, comment) => {
+    let answer = window.confirm('Delete comment?');
+    if (!answer) return;
+    try {
+      const { data } = await axios.put('/remove-comment', {
+        postId,
+        comment,
+      });
+      // console.log('comment removed', data);
+      newsFeed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <UserRoute>
       <div className='container-fluid'>
-        <div className='row py-5 text-dark bg-default-image'>
-          <div className='col text-center'>
-            <h1>Newsfeed</h1>
+        <div className='row py-10 text-light bg-default-image'>
+          <div className='col'>
+            <h1 className='display-1 fw-bold text-center'>Newsfeed</h1>
           </div>
         </div>
 
@@ -174,20 +247,46 @@ const Home = () => {
               handleDelete={handleDelete}
               handleLike={handleLike}
               handleUnlike={handleUnlike}
+              handleComment={handleComment}
+              removeComment={removeComment}
+            />
+
+            <Pagination
+              current={page}
+              total={Math.ceil((totalPosts / 10) * 10)}
+              onChange={(value) => setPage(value)}
+              className='pb-5'
             />
           </div>
 
           {/* <pre>{JSON.stringify(posts, null, 4)}</pre> */}
 
           <div className='col-md-4'>
+            <Search setPosts={setPosts} setPeople={setPeople} page={page} />
+            <br />
             {state && state.user && state.user.following && (
-              <Link href={'/user/following'} legacyBehavior>
-                <a className='h6'>{state.user.following.length} Following</a>
+              <Link
+                href={'/user/following'}
+                className='h6 text-decoration-none'
+              >
+                {state.user.following.length} Following
               </Link>
             )}
             <People people={people} handleFollow={handleFollow} />
           </div>
         </div>
+        <Modal
+          open={visible}
+          onCancel={() => setVisible(false)}
+          title='Comment'
+          footer={null}
+        >
+          <CommentForm
+            comment={comment}
+            setComment={setComment}
+            addComment={addComment}
+          />
+        </Modal>
       </div>
     </UserRoute>
   );

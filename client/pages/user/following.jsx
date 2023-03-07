@@ -23,7 +23,7 @@ const Following = () => {
   const fetchFollowing = async () => {
     try {
       const { data } = await axios.get('/user-following');
-      console.log('following => ', data);
+      // console.log('following => ', data);
       setPeople(data);
     } catch (error) {
       console.log(error);
@@ -60,10 +60,11 @@ const Following = () => {
   return (
     <div className='row col-md-6 offset-md-3'>
       {/* <pre>{JSON.stringify(people, null, 4)}</pre> */}
-      <Link href='/user/dashboard' legacyBehavior>
-        <a className='d-flex justify-content-center pt-5'>
-          <RollbackOutlined />
-        </a>
+      <Link
+        href='/user/dashboard'
+        className='d-flex justify-content-center pt-5'
+      >
+        <RollbackOutlined />
       </Link>
 
       <List

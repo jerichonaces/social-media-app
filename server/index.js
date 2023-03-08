@@ -10,7 +10,7 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
   path: '/socket.io',
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: 'https://pjconnect.vercel.app',
     methods: ['GET', 'POST'],
     allowedHeaders: [
       'Access-Control-Allow-Origin',
@@ -35,17 +35,12 @@ app.use(
 );
 
 // Add the Access-Control-Allow-Origin header to all responses
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-  );
-  res.setHeader(
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'https://pjconnect.vercel.app');
+  res.header(
     'Access-Control-Allow-Headers',
-    'X-Requested-With,content-type'
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
-  res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
 

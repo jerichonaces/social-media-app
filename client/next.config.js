@@ -1,18 +1,16 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
-
 module.exports = {
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: `https://your-server-domain.com/:path*`,
+        destination: 'https://pjconnect-api-production.up.railway.app/:path*',
       },
     ];
   },
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/api/:path*',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
@@ -20,7 +18,7 @@ module.exports = {
           },
           {
             key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, OPTIONS',
+            value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
           },
           {
             key: 'Access-Control-Allow-Headers',
@@ -29,14 +27,6 @@ module.exports = {
           },
         ],
       },
-    ];
-  },
-  async middleware() {
-    return [
-      createProxyMiddleware('/api', {
-        target: 'pjconnect-api-production.up.railway.app',
-        changeOrigin: true,
-      }),
     ];
   },
 };

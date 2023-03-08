@@ -11,7 +11,7 @@ const io = require('socket.io')(http, {
   path: '/socket.io',
   cors: {
     origin: 'https://pjconnect.vercel.app',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'OPTIONS'], // include OPTIONS method
     allowedHeaders: [
       'Access-Control-Allow-Origin',
       'Access-Control-Allow-Methods',
@@ -30,7 +30,8 @@ mongoose
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: 'https://pjconnect.vercel.app',
+    methods: ['GET', 'POST', 'OPTIONS'], // include OPTIONS method
   })
 );
 

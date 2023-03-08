@@ -1,9 +1,18 @@
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
 module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `https://your-server-domain.com/:path*`,
+      },
+    ];
+  },
   async headers() {
     return [
       {
-        // Allow requests from your Vercel app
-        source: 'https://pjconnect.vercel.app',
+        source: '/(.*)',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
@@ -11,7 +20,7 @@ module.exports = {
           },
           {
             key: 'Access-Control-Allow-Methods',
-            value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+            value: 'GET, POST, OPTIONS',
           },
           {
             key: 'Access-Control-Allow-Headers',
@@ -20,6 +29,14 @@ module.exports = {
           },
         ],
       },
+    ];
+  },
+  async middleware() {
+    return [
+      createProxyMiddleware('/api', {
+        target: 'pjconnect-api-production.up.railway.app',
+        changeOrigin: true,
+      }),
     ];
   },
 };

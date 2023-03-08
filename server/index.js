@@ -12,7 +12,6 @@ const io = require('socket.io')(http, {
   cors: {
     origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-type'],
   },
 });
 

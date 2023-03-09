@@ -92,10 +92,14 @@ const Home = ({ posts }) => {
 };
 
 export async function getServerSideProps() {
-  const { data } = await axios.get('/posts');
+  // Fetch data from an external API
+  const response = await axios.get(`${NEXT_PUBLIC_API}/posts`);
+  const posts = response.data;
+
+  // Pass the fetched data as props to the page component
   return {
     props: {
-      posts: data,
+      posts,
     },
   };
 }

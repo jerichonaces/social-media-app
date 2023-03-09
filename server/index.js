@@ -10,13 +10,9 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
   path: '/socket.io',
   cors: {
-    origin: 'https://pjconnect.vercel.app',
-    methods: ['GET', 'POST', 'OPTIONS'], // include OPTIONS method
-    allowedHeaders: [
-      'Access-Control-Allow-Origin',
-      'Access-Control-Allow-Methods',
-      'Access-Control-Allow-Headers',
-    ],
+    origin: [process.env.CLIENT_URL],
+    methods: ['GET', 'POST'], // include OPTIONS method
+    allowedHeaders: ['Content-Type'],
     credentials: true,
   },
 });
@@ -30,14 +26,13 @@ mongoose
 
 app.use(
   cors({
-    origin: 'https://pjconnect.vercel.app',
-    methods: ['GET', 'POST', 'OPTIONS'], // include OPTIONS method
+    origin: [process.env.CLIENT_URL],
   })
 );
 
 // Add the Access-Control-Allow-Origin header to all responses
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'https://pjconnect.vercel.app');
+  res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept'
@@ -51,15 +46,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // autoload routes
 readdirSync('./routes').map((r) => app.use('/api', require(`./routes/${r}`)));
-
-// socketio
-// io.on('connect', (socket) => {
-//   // console.log('SOCKET.IO', socket.id);
-//   socket.on('send-message', (message) => {
-//     // console.log('new message received => ', message);
-//     socket.broadcast.emit('received-message', message);
-//   });
-// });
 
 io.on('connect', (socket) => {
   // console.log('SOCKET.IO', socket.id);
